@@ -1,4 +1,5 @@
-import { Comic, Publisher } from '../types/comic';
+import type { Comic, Publisher } from '../types/comic';
+import { ApiError } from './apiError';
 
 // Heuristics for detecting Publisher & Main Superhero from titles and descriptions
 export function detectPublisherAndHero(text: string): { publisher: Publisher; hero: string } {
@@ -120,7 +121,7 @@ export async function searchComicsOnline(
           year: doc.year || 'Clásico',
           language: 'Español',
           coverUrl: `https://archive.org/services/img/${identifier}`,
-          description: description.replace(/<[^>]*>?/gm, '').slice(0, 240) + '...',
+          description: description.replace(/<[^>]*>?/gm, '').slice(0, 240) + '…',
           source: 'archive',
           totalPages
         };
@@ -128,8 +129,8 @@ export async function searchComicsOnline(
 
     return comics;
   } catch (error) {
-    console.error('Error searching comics online:', error);
-    return [];
+    if (error instanceof ApiError) throw error;
+    throw new ApiError('Archive.org', 'Archive.org no respondió a la búsqueda.');
   }
 }
 

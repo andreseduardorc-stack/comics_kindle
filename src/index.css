@@ -3,10 +3,64 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    color-scheme: dark;
+    /* Evita el retardo de 300 ms del doble toque al pasar página en móvil. */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    @apply bg-[#111111] text-[#e0e0e0] antialiased select-none;
+    @apply bg-[#111111] text-[#e0e0e0] antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
+    margin: 0;
+  }
+
+  /* Foco visible en todo lo enfocable. Si algún control necesita apagar el
+     anillo por diseño, tiene que poner uno propio: nunca dejarlo sin nada. */
+  :focus-visible {
+    outline: 2px solid #f59e0b;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Sin ratón no hay hover: los botones que se revelan al pasar por encima
+     deben ser visibles de entrada en pantallas táctiles. */
+  @media (hover: none) {
+    .reveal-on-hover {
+      opacity: 0.85 !important;
+    }
+  }
+}
+
+@layer components {
+  /* El lienzo de lectura no debe seleccionarse al arrastrar para pasar página,
+     pero el resto de la web sí: los títulos se copian y se pegan. */
+  .reader-canvas {
+    @apply select-none;
+    overscroll-behavior: contain;
+  }
+
+  /* Diálogos: que el scroll interno no arrastre la página de detrás. */
+  .dialog-scroll {
+    overscroll-behavior: contain;
+  }
+
+  /* Cifras que cambian (páginas, porcentajes) sin que baile el ancho. */
+  .nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Virtualización barata para catálogos de más de mil tarjetas: el navegador
+     se salta el pintado de lo que está fuera de pantalla. Sin dependencias. */
+  .card-cv {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 320px;
+  }
+  .card-cv-list {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 96px;
   }
 }
 
@@ -70,10 +124,13 @@
   }
 }
 
-@keyframes e-ink-refresh {
-  0% { filter: invert(0.9) contrast(1.2); }
-  50% { filter: invert(1) contrast(1.5); }
-  100% { filter: invert(0) contrast(1); }
+@keyframes dialog-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .animate-kindle-next {
@@ -88,11 +145,24 @@
   animation: kindle-fade 0.2s ease-out;
 }
 
-.animate-eink {
-  animation: e-ink-refresh 0.18s ease-in-out;
+.animate-fadeIn {
+  animation: dialog-fade-in 0.15s ease-out;
 }
 
 /* Kindle Slider style */
-input[type=range] {
+input[type='range'] {
   accent-color: #d97706;
+}
+
+/* Quien pide menos movimiento no quiere pantallas que se invierten ni páginas
+   que se deslizan. Se anula todo, incluidos los giros de los indicadores. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }

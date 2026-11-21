@@ -1,0 +1,13 @@
+# Puente API de KindleComics para producción (GitHub Pages).
+# Despliegue:  npx wrangler deploy
+name = "kindlecomics-api"
+main = "worker/index.ts"
+compatibility_date = "2026-01-01"
+
+[vars]
+# Orígenes autorizados a llamar al Worker, separados por comas.
+# Deja la cadena vacía para permitir cualquiera (útil mientras pruebas).
+ALLOWED_ORIGINS = "https://andreseduardorc-stack.github.io,http://localhost:5173,http://localhost:4173"
+
+[observability]
+enabled = true

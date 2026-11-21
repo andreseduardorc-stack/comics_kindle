@@ -7,6 +7,10 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        // Los móviles estrechos también necesitan el selector de tema.
+        xs: '420px',
+      },
       colors: {
         kindle: {
           bg: '#121212',
@@ -24,7 +28,9 @@ export default {
         }
       },
       fontFamily: {
-        serif: ['Merriweather', 'Georgia', 'serif'],
+        // Literata es la que carga index.html; Merriweather no se descargaba
+        // nunca, así que todos los `font-serif` acababan en Georgia.
+        serif: ['Literata', 'Georgia', 'serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
       }
     },

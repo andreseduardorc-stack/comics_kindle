@@ -36,6 +36,8 @@ export interface Comic {
   readProgress?: number; // last read page (1-indexed)
   isFavorite?: boolean;
   lastReadTimestamp?: number;
+  /** Cómic local cuyas páginas ya no están en IndexedDB: hay que volver a importarlo. */
+  needsReimport?: boolean;
 }
 
 export type ReaderTheme = 'dark' | 'sepia' | 'light' | 'eink';
